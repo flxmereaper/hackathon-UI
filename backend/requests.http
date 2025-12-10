@@ -1,0 +1,15 @@
+@URL = http://localhost:3000
+
+### get all locations
+GET {{URL}}/locations
+
+### get location by id
+GET {{URL}}/books/2
+
+### update a location
+PUT {{URL}}/locations/2
+Content-Type: application/json
+
+{
+  true
+}
