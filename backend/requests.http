@@ -11,5 +11,6 @@ PUT {{URL}}/locations/2
 Content-Type: application/json
 
 {
-  true
+    "availableItems": 2,
+    "collectedItems": 2
 }
