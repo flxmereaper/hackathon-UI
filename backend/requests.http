@@ -4,10 +4,10 @@
 GET {{URL}}/locations
 
 ### get location by id
-GET {{URL}}/books/2
+GET {{URL}}/locations/2
 
 ### update a location
-PUT {{URL}}/locations/2
+PUT {{URL}}/locations/0
 Content-Type: application/json
 
 {
