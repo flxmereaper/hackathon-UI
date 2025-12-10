@@ -29,8 +29,8 @@ getLocationsFromBackend();
 mapImage.onload = () => {
     drawImageInCanvas();
     //testNotDoneLocations();
-    testDoneLocations();
-    //testAvailableLocations();
+    //testDoneLocations();
+    testAvailableLocations();
 }
 
 function drawImageInCanvas() {
@@ -104,5 +104,19 @@ canvas.addEventListener('mousemove', (e) => {
 
 async function getLocationsFromBackend() {
     let locationsBackend = await getLocations(`${backendUrl}/locations`);
-    console.log(locationsBackend);
+    // console.log(locationsBackend);
+
+    updateLocations(locationsBackend);
+}
+
+function updateLocations(locationsBackend) {
+    locationsBackend.forEach(locationB => {
+        const local = locations.find(l => l.id == locationB.id);
+        if (local) {
+            local.availableParts = locationB.availableItems;
+            local.collectedParts = locationB.collectedItems;
+        }
+    });
+
+    // console.log(locations);
 }
