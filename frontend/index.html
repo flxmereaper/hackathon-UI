@@ -1,19 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
     <title>FTS Interface</title>
-</head>
-<body>
-    <div>
+  </head>
+  <body>
+  <div class="page">
+    <div class="leftPart">
+      <div id="divStart">
         <button id="btnStart">START</button>
-    </div>
-    <div>
-        <label for="ftsProgress">FTS Progress:</label>
+      </div>
+      <div class="status">
+        <label for="ftsProgress">FTS Status:</label>
         <progress id="ftsProgress" value="0" max="100"></progress>
+      </div>
+      <div class="parts">
+        <h3>Teile</h3>
+        <p id="collectedParts"></p>
+      </div>
     </div>
+
+    <div class="mapWrapper">
+      <img id="map" src="map.png" alt="map" />
+       <!-- <embed src="Hallendesign Folie Hackathon.pdf" width="800" height="600" type="application/pdf"> -->
+    </div>
+  </div>
 </body>
+
 </html>
