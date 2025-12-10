@@ -1,6 +1,6 @@
 .page {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: space-between;
   gap: 24px;
   padding: 24px;
@@ -19,6 +19,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
 }
 
 #divStart {
@@ -39,7 +40,8 @@
 }
 
 #btnStart:hover {
-  background: #005fd1;
+  background: #0a9000;
+  transform: scale(1.05);
 }
 
 .status label {
@@ -61,6 +63,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  height: 100%;
 }
 
 #map {
