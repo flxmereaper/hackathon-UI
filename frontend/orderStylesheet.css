@@ -1,94 +1,185 @@
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f4f4f7;
-  color: #222;
+@font-face {
+  font-family: "LED Dot Matrix";
+  src: url("/frontend/fonts/LED Dot-Matrix 400.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
 }
 
-.configurator {
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #050509;
+  color: #f7f9fc;
+}
+
+/* Header */
+.config-header {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  margin: 40px auto 8px;
+  text-align: center;
+  color: #f7f9fc;
 }
 
 .config-header h1 {
-  margin: 0 0 8px;
+  font-family: "LED Dot Matrix", system-ui, sans-serif;
+  margin: 0 0 6px;
+  font-size: 2.2rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .config-header p {
-  margin: 0 0 24px;
-  color: #555;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #a4acbd;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Grid für die Parts */
-.parts-grid {
+/* Card grid */
+#part-container {
+  max-width: 1200px;
+  margin: 32px auto 40px;
+  padding: 0 16px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+  gap: 24px;
+  justify-items: center;
 }
 
-/* Part-Karte */
+/* Card */
 .part-card {
-  background: #ffffff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-  cursor: pointer;
+  background: #101017;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 10px 24px rgba(0, 0, 0, 0.85),
+    0 0 30px rgba(59, 151, 151, 0.25);
+  overflow: hidden;
+  width: 240px;
+  backdrop-filter: blur(12px);
 }
 
-.part-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
+.part-card:hover
+{
+  transform: scale(1.03);
 }
 
 /* Bild */
-.part-image {
+.part-card__image {
   width: 100%;
-  height: 150px;
+  height: 140px;
   object-fit: cover;
+  background: radial-gradient(circle at 30% 20%, #3b9797, #050509);
 }
 
-/* Inhalt */
-.part-content {
-  padding: 12px 14px;
-  flex: 1;
+/* Content */
+.part-card__content {
+  padding: 12px 14px 10px;
 }
 
-.part-title {
-  margin: 0 0 6px;
-  font-size: 1.05rem;
+.part-card__title {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.part-description {
+.part-card__location {
   margin: 0;
-  font-size: 0.9rem;
-  color: #555;
+  font-size: 0.8rem;
+  color: #8b93a3;
+  letter-spacing: 0.03em;
 }
 
-/* Button */
-.part-select-btn {
-  margin: 0 14px 14px;
-  padding: 8px 12px;
-  border: none;
-  border-radius: 6px;
-  background: #0077ff;
+.part-card__button {
+  margin: 10px 12px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 8px 16px;
+  background: #BF092F;
   color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
-  align-self: flex-start;
-  transition: background 0.15s ease;
+  border-radius: 999px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  min-width: 44px;
+  height: 34px;
 }
 
-.part-select-btn:hover {
-  background: #005fd1;
+
+/* Icon standardmäßig sichtbar, zentriert */
+.part-card__button-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+  flex-shrink: 0;
 }
 
-/* Zustand: ausgewählt (per JS Klasse hinzufügen) */
-.part-card.selected {
-  border: 2px solid #00a36c;
-  box-shadow: 0 0 0 3px rgba(0, 163, 108, 0.25);
+/* Text initial versteckt */
+.part-card__button-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Hover: Icon ausblenden, Text einblenden (zentriert) */
+.part-card__button:hover {
+  background: #a10828;
+}
+
+.part-card__button:hover .part-card__button-icon {
+  opacity: 0;
+}
+
+.part-card__button:hover .part-card__button-text {
+  opacity: 1;
+}
+
+/* Klick-Animation: Text bleibt weg, Icon von links nach rechts */
+.part-card__button--animating .part-card__button-text {
+  opacity: 0 !important;
+}
+
+.part-card__button--animating .part-card__button-icon {
+  position: absolute;
+  left: 0;
+  opacity: 1;
+  animation: cart-slide 0.6s ease-in-out forwards;
+}
+
+@keyframes cart-slide {
+  0%   {
+    left: -30px;
+    opacity: 1;
+  }
+  50%  {
+    left: 40%;
+    transform: translateX(-10%);
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% + 10px);
+    opacity: 1;
+  }
 }

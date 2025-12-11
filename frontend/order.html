@@ -1,69 +1,19 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8" />
-  <title>Product Konfigurator</title>
-  <link rel="stylesheet" href="orderStylesheet.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Produkt Konfigurator</title>
+    <link rel="stylesheet" href="orderStylesheet.css" />
+    <script src="orderScript.js" defer></script>
+  </head>
+  <body>
     <header class="config-header">
       <h1>Produkt Konfigurator</h1>
       <p>Wähle die gewünschten Parts aus.</p>
     </header>
 
-    <section class="parts-grid">
-      <article id="part_card_1" class="part-card">
-        <img src="place_holder.png" alt="Part 1" class="part-image" />
-        <div class="part-content">
-          <h2 class="part-title">Part 1</h2>
-          <p class="part-description">
-            Kurze Beschreibung des Parts, z.B. Größe, Farbe oder Funktion.
-          </p>
-        </div>
-        <button class="part-select-btn" data-part-id="1">
-          Auswählen
-        </button>
-      </article>
-
-      <article id="part_card_2" class="part-card">
-        <img src="place_holder.png" alt="Part 2" class="part-image" />
-        <div class="part-content">
-          <h2 class="part-title">Part 2</h2>
-          <p class="part-description">
-            Kurze Beschreibung des Parts, z.B. Material oder Besonderheit.
-          </p>
-        </div>
-        <button class="part-select-btn" data-part-id="2">
-          Auswählen
-        </button>
-      </article>
-
-      <section class="parts-grid">
-      <article id="part_card_3" class="part-card">
-        <img src="place_holder.png" alt="Part 3" class="part-image" />
-        <div class="part-content">
-          <h2 class="part-title">Part 3</h2>
-          <p class="part-description">
-            Kurze Beschreibung des Parts, z.B. Größe, Farbe oder Funktion.
-          </p>
-        </div>
-        <button class="part-select-btn" data-part-id="1">
-          Auswählen
-        </button>
-      </article>
-
-      <article id="part_card_4" class="part-card">
-        <img src="place_holder.png" alt="Part 4" class="part-image" />
-        <div class="part-content">
-          <h2 class="part-title">Part 4</h2>
-          <p class="part-description">
-            Kurze Beschreibung des Parts, z.B. Material oder Besonderheit.
-          </p>
-        </div>
-        <button class="part-select-btn" data-part-id="2">
-          Auswählen
-        </button>
-      </article>
-    </section>
-</body>
+    <main>
+      <section id="part-container"></section>
+    </main>
+  </body>
 </html>

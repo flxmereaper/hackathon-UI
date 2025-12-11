@@ -84,3 +84,44 @@
     justify-content: center;
   }
 }
+
+.location-popup {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  z-index: 20;
+}
+
+.legend {
+  margin-top: 16px;
+  font-size: 0.9rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.legend-done {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+.legend-available {
+  background: rgba(245, 189, 7, 0.5);
+}
+
+.legend-not-visited {
+  background: rgba(133, 133, 133, 0.5);
+}
