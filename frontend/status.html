@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="status.css" />
+    <script src="status.js" defer></script>
+    <title>FTS Interface</title>
+  </head>
+  <body>
+    <div class="page">
+      <div class="leftPart">
+        <!-- <div id="divStart">
+          <button id="btnStart">START</button>
+        </div> -->
+        <div class="status">
+          <label for="ftsProgress">FTS Status:</label>
+          <progress id="ftsProgress" value="0" max="100"></progress>
+        </div>
+        <div class="parts">
+          <h3>Bestellte Teile</h3>
+          <p id="collectedParts">-</p>
+        </div>
+        <div id="divLocationInformation">
+          <p id="pAvailableParts">Verfügbare Teile: -</p>
+          <p id="pCollectedParts">Aufgehobene Teile: -</p>
+        </div>
+
+        <div id="divLegende" class="legend">
+          <div class="legend-item">
+            <span class="legend-color legend-done"></span>
+            <span>Fertig</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color legend-not-visited"></span>
+            <span>Teile liegen dort noch</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color legend-available"></span>
+            <span>FTS war dort noch nicht</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color legend-empty"></span>
+            <span>Location hat keine Teile</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mapWrapper">
+        <canvas id="myCanvas" width="800" height="600"></canvas>
+        <div id="locationPopup" class="location-popup" style="display: none">
+          <p>Verfügbare Teile: 0</p>
+          <p>Aufgehobene Teile: 0</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

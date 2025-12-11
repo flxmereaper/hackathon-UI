@@ -320,7 +320,7 @@ cartButton.addEventListener('click', async () => {
         const cartData = Array.from(shoppingCart.entries());
         sessionStorage.setItem('shoppingCart', JSON.stringify(cartData));
 
-        window.location.href = 'orderOverview.html';
+        window.location.href = 'overview.html';
 
     } catch (err) {
         console.error('❌ Error submitting order:', err);

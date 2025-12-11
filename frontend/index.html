@@ -2,53 +2,32 @@
 <html lang="de">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <script src="script.js" defer></script>
-    <title>FTS Interface</title>
+    <title>Produkt Konfigurator</title>
+    <link rel="stylesheet" href="index.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module" src="index.js"></script>
   </head>
   <body>
-    <div class="page">
-      <div class="leftPart">
-        <!-- <div id="divStart">
-          <button id="btnStart">START</button>
-        </div> -->
-        <div class="status">
-          <label for="ftsProgress">FTS Status:</label>
-          <progress id="ftsProgress" value="0" max="100"></progress>
-        </div>
-        <div class="parts">
-          <h3>Bestellte Teile</h3>
-          <p id="collectedParts">-</p>
-        </div>
-        <div id="divLocationInformation">
-          <p id="pAvailableParts">Verfügbare Teile: -</p>
-          <p id="pCollectedParts">Aufgehobene Teile: -</p>
-        </div>
+    <header class="config-header">
+      <h1>Produkt Warenhaus</h1>
+    </header>
 
-        <div id="divLegende" class="legend">
-          <div class="legend-item">
-            <span class="legend-color legend-done"></span>
-            <span>Fertig</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-color legend-available"></span>
-            <span>Teile noch verfügbar</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-color legend-not-visited"></span>
-            <span>Noch nicht angefahren</span>
-          </div>
-        </div>
-      </div>
+    <button id="btnShoppingCart" class="shopping-cart-btn">
+      <img src="img/shopping-cart.png" alt="Warenkorb" />
+      <span class="cart-button-text">Bestellung abgeben</span>
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
 
-      <div class="mapWrapper">
-        <canvas id="myCanvas" width="800" height="600"></canvas>
-        <div id="locationPopup" class="location-popup" style="display: none">
-          <p>Verfügbare Teile: 0</p>
-          <p>Aufgehobene Teile: 0</p>
-        </div>
-      </div>
-    </div>
+    <main>
+      <section id="part-container"></section>
+    </main>
   </body>
 </html>

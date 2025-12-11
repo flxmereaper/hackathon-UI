@@ -34,3 +34,235 @@ Content-Type: application/json
     {"id": 2, "purchased": "true"},
     {"id": 3, "purchased": "true"}
 ]
+
+
+
+### ========================================
+### TEST 5: Location 0 - 1 Teil abgeholt (Orange State)
+### ========================================
+PUT {{URL}}/locations/0
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### ========================================
+### TEST 6: Location 0 - Alle Teile abgeholt (Grün State)
+### ========================================
+PUT {{URL}}/locations/0
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### ========================================
+### TEST 7: Location 2 - Noch nicht besucht (Grau State)
+### ========================================
+PUT {{URL}}/locations/2
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+### ========================================
+### TEST 8: Location 1 - Keine Teile (Rot gestreift)
+### ========================================
+PUT {{URL}}/locations/1
+Content-Type: application/json
+
+{
+    "availableItems": 0,
+    "collectedItems": 0
+}
+
+### ========================================
+### TEST 9: Alle Locations zurücksetzen
+### ========================================
+PUT {{URL}}/locations/0
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+###
+PUT {{URL}}/locations/1
+Content-Type: application/json
+
+{
+    "availableItems": 0,
+    "collectedItems": 0
+}
+
+###
+PUT {{URL}}/locations/2
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+###
+PUT {{URL}}/locations/3
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+###
+PUT {{URL}}/locations/4
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+
+### ========================================
+### TEST 10: Simulations-Szenario - Schritt für Schritt
+### ========================================
+
+### Schritt 1: Bestellung aufgeben (alle 4 Teile)
+POST {{URL}}/orders
+Content-Type: application/json
+
+[
+    {"id": 0, "purchased": "false"},
+    {"id": 1, "purchased": "false"},
+    {"id": 2, "purchased": "false"},
+    {"id": 3, "purchased": "false"}
+]
+
+### Schritt 2: FTS fährt zu Location 0 (Oberkoerper abgeholt)
+PUT {{URL}}/locations/0
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### Schritt 3: FTS fährt zu Location 2 (Kopf abgeholt)
+PUT {{URL}}/locations/2
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### Schritt 4: FTS fährt zu Location 3 (Linker Arm teilweise abgeholt)
+PUT {{URL}}/locations/3
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+### Schritt 5: FTS fährt zu Location 3 (Linker Arm komplett abgeholt)
+PUT {{URL}}/locations/3
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### Schritt 6: FTS fährt zu Location 4 (Rechter Arm abgeholt) - FERTIG!
+PUT {{URL}}/locations/4
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### ========================================
+### TEST 11: Progressbar Test (50% abgeholt)
+### ========================================
+
+### 4 Teile bestellen
+POST {{URL}}/orders
+Content-Type: application/json
+
+[
+    {"id": 0, "purchased": "false"},
+    {"id": 1, "purchased": "false"},
+    {"id": 2, "purchased": "false"},
+    {"id": 3, "purchased": "false"}
+]
+
+### 2 von 4 Teilen abholen (50%)
+PUT {{URL}}/locations/0
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+###
+PUT {{URL}}/locations/2
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### ========================================
+### TEST 12: Fehlerfall - Keine Bestellung
+### ========================================
+GET {{URL}}/orders
+
+### ========================================
+### TEST 13: Mixed State - Verschiedene Locations Zustände
+### ========================================
+
+### Location 0: Fertig (Grün)
+PUT {{URL}}/locations/0
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 1
+}
+
+### Location 2: In Bearbeitung (Orange)
+PUT {{URL}}/locations/2
+Content-Type: application/json
+
+{
+    "availableItems": 2,
+    "collectedItems": 1
+}
+
+### Location 3: Nicht besucht (Grau)
+PUT {{URL}}/locations/3
+Content-Type: application/json
+
+{
+    "availableItems": 1,
+    "collectedItems": 0
+}
+
+### Location 1: Leer (Rot gestreift)
+PUT {{URL}}/locations/1
+Content-Type: application/json
+
+{
+    "availableItems": 0,
+    "collectedItems": 0
+}

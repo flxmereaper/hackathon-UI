@@ -54,11 +54,14 @@ function drawLocationAvailable(location) {
 }
 
 function drawLocationEmpty(location) {
-    // Dark red/gray fill to indicate no parts available
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(location.x, location.y, location.xSize, location.ySize);
+    ctx.clip();
+
     ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
     ctx.fillRect(location.x, location.y, location.xSize, location.ySize);
 
-    // Red diagonal stripes pattern
     ctx.strokeStyle = "rgba(191, 9, 47, 0.7)";
     ctx.lineWidth = 3;
 
@@ -70,7 +73,8 @@ function drawLocationEmpty(location) {
         ctx.stroke();
     }
 
-    // Red border
+    ctx.restore();
+
     ctx.strokeStyle = "rgba(191, 9, 47, 0.8)";
     ctx.lineWidth = 2;
     ctx.strokeRect(location.x, location.y, location.xSize, location.ySize);
@@ -165,21 +169,17 @@ function updateLocationsDrawing() {
     drawImageInCanvas();
 
     locations.forEach(l => {
-        // Check if location has no available parts (empty)
         if (l.availableParts === 0) {
             drawLocationEmpty(l);
         }
-        // All parts collected
         else if (l.availableParts === l.collectedParts) {
             drawLocationDone(l);
         }
-        // No parts collected yet
-        else if (l.collectedParts === 0) {
-            drawLocationAvailable(l);
-        }
-        // Partially collected
-        else if (l.availableParts > l.collectedParts) {
+        else if (l.collectedParts > 0 && l.collectedParts < l.availableParts) {
             drawLocationNotDone(l);
+        }
+        else if (l.collectedParts === 0 && l.availableParts > 0) {
+            drawLocationAvailable(l);
         }
     });
 
@@ -257,6 +257,49 @@ function updateProgressbar() {
     const label = document.querySelector('.status label');
     if (label && orderedTotal > 0) {
         label.textContent = `FTS Status: ${orderedCollected}/${orderedTotal} Teile aufgehoben`;
+    }
+
+    // Prüfen ob alle Teile eingesammelt wurden
+    checkIfAllPartsCollected(orderedCollected, orderedTotal);
+}
+
+function checkIfAllPartsCollected(orderedCollected, orderedTotal) {
+    if (orderedTotal > 0 && orderedCollected === orderedTotal) {
+        showAssemblyButton();
+    } else {
+        hideAssemblyButton();
+    }
+}
+
+function showAssemblyButton() {
+    let assemblyButton = document.getElementById('assemblyButton');
+
+    if (!assemblyButton) {
+        assemblyButton = document.createElement('div');
+        assemblyButton.id = 'assemblyButton';
+        assemblyButton.className = 'assembly-button-overlay';
+
+        assemblyButton.innerHTML = `
+            <div class="assembly-button-content">
+                <h2>✓ Alle Teile eingesammelt!</h2>
+                <button id="btnAssembly">Zur Aufbauanleitung</button>
+            </div>
+        `;
+
+        document.body.appendChild(assemblyButton);
+
+        document.getElementById('btnAssembly').addEventListener('click', () => {
+            window.location.href = '/frontend/manual.html';
+        });
+    }
+
+    assemblyButton.style.display = 'flex';
+}
+
+function hideAssemblyButton() {
+    const assemblyButton = document.getElementById('assemblyButton');
+    if (assemblyButton) {
+        assemblyButton.style.display = 'none';
     }
 }
 
