@@ -81,8 +81,8 @@ function reduceAvailableFieldInProducts() {
 
 
 app.get('/orders', (req, res) => {
-    if (!orders) {
-        return res.status(404).json({ error: "No orders found" });
+    if(orders.length == 0) {
+        return res.status(404).json({error: "No orders found"});
     }
     const response = orders[orders.length - 1].reduce((acc, curr) => {
         console.log({ ...curr, locationId: products.find(p => p.id == curr.id).locationId })
@@ -95,7 +95,7 @@ app.get('/orders', (req, res) => {
 });
 
 app.get('/enabled', (req, res) => {
-    if (orders) {
+    if (orders.length > 0) {
         return res.json(true);
     }
     return res.json(false);
