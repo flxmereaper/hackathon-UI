@@ -1,127 +1,355 @@
+@font-face {
+  font-family: "LED Dot Matrix";
+  src: url("/frontend/fonts/LED Dot-Matrix 400.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  height: 100%;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  background: #050509;
+  color: #f7f9fc;
+}
+
 .page {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
-  gap: 24px;
-  padding: 24px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f4f4f7;
+  gap: 32px;
+  padding: 40px 24px;
   min-height: 100vh;
-  box-sizing: border-box;
 }
 
+/* Linke Sidebar */
 .leftPart {
-  flex: 0 0 260px;
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 16px 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  flex: 0 0 300px;
+  background: #101017;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 10px 24px rgba(0, 0, 0, 0.85),
+    0 0 30px rgba(59, 151, 151, 0.25);
+  backdrop-filter: blur(12px);
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  height: 100%;
+  gap: 24px;
 }
 
+/* Start Button */
 #divStart {
   text-align: center;
 }
 
 #btnStart {
   width: 100%;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 6px;
-  background: #0077ff;
+  padding: 14px 24px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: #BF092F;
   color: #ffffff;
   font-size: 1rem;
   font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(191, 9, 47, 0.4);
+  font-family: system-ui, sans-serif;
 }
 
 #btnStart:hover {
-  background: #0a9000;
-  transform: scale(1.05);
+  background: #2ecc71;
+  border-color: rgba(46, 204, 113, 0.5);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.5);
+  transform: translateY(-2px);
+}
+
+#btnStart:active {
+  transform: translateY(0);
+}
+
+/* Status Section */
+.status {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .status label {
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   font-weight: 600;
+  font-size: 0.9rem;
+  color: #a4acbd;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 #ftsProgress {
   width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#ftsProgress::-webkit-progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+#ftsProgress::-webkit-progress-value {
+  background: linear-gradient(90deg, #3b9797, #2ecc71);
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+#ftsProgress::-moz-progress-bar {
+  background: linear-gradient(90deg, #3b9797, #2ecc71);
+  border-radius: 6px;
+}
+
+/* Parts Section */
+.parts {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .parts h3 {
-  margin: 0 0 4px;
+  margin: 0 0 12px;
+  font-size: 0.95rem;
+  color: #ffffff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
-.mapWrapper {
+.parts p,
+#divLocationInformation p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #8b93a3;
+  line-height: 1.6;
+}
+
+#collectedParts {
   flex: 1;
+  overflow-y: auto;
+}
+
+/* Location Information */
+#divLocationInformation {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  height: 100%;
+  flex-direction: column;
+  gap: 8px;
 }
 
-#map {
-  width: 800px;
-  height: 600px;
-  max-width: 100%;
-  border-radius: 8px;
-  object-fit: cover;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+#divLocationInformation p {
+  font-size: 0.88rem;
+  color: #a4acbd;
 }
 
-@media (max-width: 900px) {
-  .page {
-    flex-direction: column;
-  }
-
-  .mapWrapper {
-    justify-content: center;
-  }
-}
-
-.location-popup {
-  position: absolute;
-  background: #ffffff;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  padding: 10px 12px;
-  font-size: 0.9rem;
-  z-index: 20;
-}
-
-.legend {
-  margin-top: 16px;
-  font-size: 0.9rem;
+/* Legend */
+#divLegende {
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+  flex-shrink: 0;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  color: #a4acbd;
+}
+
+.legend-item:last-child {
+  margin-bottom: 0;
 }
 
 .legend-color {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
   display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
 
 .legend-done {
-  background: rgba(0, 255, 0, 0.5);
+  background: rgba(46, 204, 113, 0.6);
+  box-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
 }
 
 .legend-available {
-  background: rgba(245, 189, 7, 0.5);
+  background: rgba(245, 189, 7, 0.6);
+  box-shadow: 0 0 8px rgba(245, 189, 7, 0.4);
 }
 
 .legend-not-visited {
-  background: rgba(133, 133, 133, 0.5);
+  background: rgba(133, 133, 133, 0.6);
+  box-shadow: 0 0 8px rgba(133, 133, 133, 0.3);
+}
+
+/* Map Wrapper */
+.mapWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  position: relative;
+}
+
+#myCanvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    0 10px 24px rgba(0, 0, 0, 0.85),
+    0 0 30px rgba(59, 151, 151, 0.25);
+  background: #1a1a24;
+  object-fit: contain;
+}
+
+/* Location Popup */
+.location-popup {
+  position: absolute;
+  background: #101017;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(59, 151, 151, 0.3);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: #a4acbd;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.location-popup p {
+  margin: 4px 0;
+  color: #f7f9fc;
+}
+
+.location-popup strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Bestellte Teile Liste */
+#collectedParts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#collectedParts::-webkit-scrollbar {
+  width: 6px;
+}
+
+#collectedParts::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+#collectedParts::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+#collectedParts::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+#collectedParts li {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+#collectedParts li:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#collectedParts li:last-child {
+  margin-bottom: 0;
+}
+
+#collectedParts strong {
+  color: #ffffff;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#collectedParts span {
+  color: #a4acbd;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .page {
+    flex-direction: column;
+    padding: 24px 16px;
+  }
+
+  .leftPart {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .mapWrapper {
+    justify-content: center;
+    min-height: 500px;
+  }
+
+  #myCanvas {
+    max-width: 100%;
+  }
 }

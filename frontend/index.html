@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,20 +10,20 @@
   <body>
     <div class="page">
       <div class="leftPart">
-        <div id="divStart">
+        <!-- <div id="divStart">
           <button id="btnStart">START</button>
-        </div>
+        </div> -->
         <div class="status">
           <label for="ftsProgress">FTS Status:</label>
           <progress id="ftsProgress" value="0" max="100"></progress>
         </div>
         <div class="parts">
-          <h3>Teile</h3>
-          <p id="collectedParts"></p>
+          <h3>Bestellte Teile</h3>
+          <p id="collectedParts">-</p>
         </div>
         <div id="divLocationInformation">
-          <p id="pAvailableParts">Verfügbare Teile:</p>
-          <p id="pCollectedParts">Aufgehobene Teile:</p>
+          <p id="pAvailableParts">Verfügbare Teile: -</p>
+          <p id="pCollectedParts">Aufgehobene Teile: -</p>
         </div>
 
         <div id="divLegende" class="legend">
@@ -45,13 +45,9 @@
       <div class="mapWrapper">
         <canvas id="myCanvas" width="800" height="600"></canvas>
         <div id="locationPopup" class="location-popup" style="display: none">
-          <p>Verfügbare Teile:</p>
-          <p>Aufgehobene Teile:</p>
+          <p>Verfügbare Teile: 0</p>
+          <p>Aufgehobene Teile: 0</p>
         </div>
-      </div>
-
-      <div class="mapWrapper">
-        <canvas id="myCanvas" width="800" height="600"></canvas>
       </div>
     </div>
   </body>
