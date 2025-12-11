@@ -55,6 +55,9 @@ app.post('/orders', json(), (req, res) => {
 });
 
 app.get('/orders', (req, res) => {
+    if(!orders) {
+        return res.status(404).json({error: "No orders found"});
+    }
     const response = orders[orders.length-1].reduce((acc, curr) => {
         console.log({...curr, locationId: products.find(p => p.id == curr.id).locationId})
         return acc.concat(JSON.stringify(
