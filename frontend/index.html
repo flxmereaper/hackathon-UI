@@ -8,29 +8,51 @@
     <title>FTS Interface</title>
   </head>
   <body>
-  <div class="page">
-    <div class="leftPart">
-      <div id="divStart">
-        <button id="btnStart">START</button>
-      </div>
-      <div class="status">
-        <label for="ftsProgress">FTS Status:</label>
-        <progress id="ftsProgress" value="0" max="100"></progress>
-      </div>
-      <div class="parts">
-        <h3>Teile</h3>
-        <p id="collectedParts"></p>
-      </div>
-      <div id="divLocationInformation">
-        <p>Verfügbare Teile: </p>
-        <p>Aufgehobene Teile: </p>
-      </div>
-    </div>
+    <div class="page">
+      <div class="leftPart">
+        <div id="divStart">
+          <button id="btnStart">START</button>
+        </div>
+        <div class="status">
+          <label for="ftsProgress">FTS Status:</label>
+          <progress id="ftsProgress" value="0" max="100"></progress>
+        </div>
+        <div class="parts">
+          <h3>Teile</h3>
+          <p id="collectedParts"></p>
+        </div>
+        <div id="divLocationInformation">
+          <p id="pAvailableParts">Verfügbare Teile:</p>
+          <p id="pCollectedParts">Aufgehobene Teile:</p>
+        </div>
 
-    <div class="mapWrapper">
+        <div id="divLegende" class="legend">
+          <div class="legend-item">
+            <span class="legend-color legend-done"></span>
+            <span>Fertig</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color legend-available"></span>
+            <span>Teile noch verfügbar</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color legend-not-visited"></span>
+            <span>Noch nicht angefahren</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mapWrapper">
         <canvas id="myCanvas" width="800" height="600"></canvas>
-    </div>
-  </div>
-</body>
+        <div id="locationPopup" class="location-popup" style="display: none">
+          <p>Verfügbare Teile:</p>
+          <p>Aufgehobene Teile:</p>
+        </div>
+      </div>
 
+      <div class="mapWrapper">
+        <canvas id="myCanvas" width="800" height="600"></canvas>
+      </div>
+    </div>
+  </body>
 </html>

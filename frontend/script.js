@@ -1,6 +1,6 @@
 'use strict';
 
-const backendUrl = "http://10.230.18.22:3000";
+const backendUrl = "http://10.230.18.55:3000"; // "http://10.230.18.55:3000" // "http://192.168.4.4:3000"
 
 const locations = [
     { id: 0, x: 0, y: 185, xSize: 350, ySize: 165, availableParts: 0, collectedParts: 0 },
@@ -10,29 +10,24 @@ const locations = [
     { id: 4, x: 715, y: 175, xSize: 85, ySize: 215, availableParts: 0, collectedParts: 0 }
 ];
 
-const getStatus = async (backendUrl) => ((await fetch(`${backendUrl}`)).json());
-const getLocations = async (backendUrl) => ((await fetch(`${backendUrl}`)).json());
+const getStatus = async (url) => ((await fetch(url)).json());
+const getLocations = async (url) => ((await fetch(url)).json());
 
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 const mapImage = new Image();
 mapImage.src = "../frontend/img/map.png";
 
-let currentStatus = [];
-let collectedParts = [];
-
+let currentStatus = 0;
 let currentLocationHovering = 0;
+
+const popup = document.getElementById('locationPopup');
 
 getLocationsFromBackend();
 
-
 mapImage.onload = () => {
     drawImageInCanvas();
-
-    // testNotDoneLocations();
-    // testDoneLocations();
-    // testAvailableLocations();
-}
+};
 
 function drawImageInCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -41,73 +36,61 @@ function drawImageInCanvas() {
 }
 
 function drawLocationDone(location) {
-    //ctx.clearRect(location.x, location.y, location.xSize, location.ySize);
     ctx.fillStyle = "rgba(0, 255, 0, 0.5)";
     ctx.fillRect(location.x, location.y, location.xSize, location.ySize);
-    console.log(`location done and drawn at x = ${location.x}, y = ${location.y}, id = ${location.id}`);
 }
 
 function drawLocationNotDone(location) {
-    //ctx.clearRect(location.x, location.y, location.xSize, location.ySize);
     ctx.fillStyle = "rgba(245, 189, 7, 0.5)";
     ctx.fillRect(location.x, location.y, location.xSize, location.ySize);
-    //console.log(`location done and drawn at x = ${ location.x }, y = ${ location.y }, id = ${ location.id }`);
 }
 
 function drawLocationAvailable(location) {
-    //ctx.clearRect(location.x, location.y, location.xSize, location.ySize);
     ctx.fillStyle = "rgba(133, 133, 133, 0.5)";
     ctx.fillRect(location.x, location.y, location.xSize, location.ySize);
-    //console.log(`location done and drawn at x = ${ location.x }, y = ${ location.y }, id = ${ location.id }`);
 }
 
-// function drawNextLocation(location) {
-//     ctx.fillStyle = "rgba(0, 150, 255, 0.3)";
-// }
-
-
-function testDoneLocations() {
-    locations.forEach(location => drawLocationDone(location));
-}
-
-function testNotDoneLocations() {
-    locations.forEach(location => drawLocationNotDone(location));
-}
-
-function testAvailableLocations() {
-    locations.forEach(location => {
-        if (location.collectedParts == 0)
-            drawLocationAvailable(location);
-    })
-}
-
-canvas.addEventListener('mousemove', (e) => {
+canvas.addEventListener("click", (e) => {
     const rect = canvas.getBoundingClientRect();
     const xPos = e.clientX - rect.left;
     const yPos = e.clientY - rect.top;
 
     const hit = locations.find(
-        location => xPos >= location.x && xPos <= location.x + location.xSize &&
+        location =>
+            xPos >= location.x && xPos <= location.x + location.xSize &&
             yPos >= location.y && yPos <= location.y + location.ySize
     );
 
-    if (hit) {
-        currentLocationHovering = hit.id;
-        //console.log(`location with id: ${ currentLocationHovering } `);
-    }
-    else {
-        currentLocationHovering = -1;
+    if (!hit) {
+        popup.style.display = "none";
+        return;
     }
 
-    //console.log(`last hovered location id: ${ currentLocationHovering } `);    
+    currentLocationHovering = hit.id;
+
+    const wrapperRect = canvas.parentElement.getBoundingClientRect();
+    popup.style.left = `${e.clientX - wrapperRect.left + 360}px`;
+    popup.style.top = `${e.clientY - wrapperRect.top - 40}px`;
+
+    popup.innerHTML = `
+    <strong>Location ${hit.id}</strong><br>
+    Verfügbare Teile: ${hit.availableParts}<br>
+    Aufgehobene Teile: ${hit.collectedParts}
+  `;
+
+    popup.style.display = "block";
 });
 
+document.addEventListener("click", (e) => {
+    if (!canvas.contains(e.target) && !popup.contains(e.target)) {
+        popup.style.display = "none";
+    }
+});
 
 async function getLocationsFromBackend() {
-    let locationsBackend = await getLocations(`${backendUrl}/locations`);
-    // console.log(locationsBackend);
-
+    const locationsBackend = await getLocations(`${backendUrl}/locations`);
     updateLocations(locationsBackend);
+    updateProgressbar();
 }
 
 function updateLocations(locationsBackend) {
@@ -119,31 +102,67 @@ function updateLocations(locationsBackend) {
         }
     });
 
-    // console.log(locations);
-
-    console.log('UPDATED THE LOCATION');
+    //console.log('UPDATED THE LOCATION');
 
     updateLocationsDrawing();
+    updatePartsInfo();
 }
 
 function updateLocationsDrawing() {
-
     drawImageInCanvas();
+
     locations.forEach(l => {
-        if (l.availableParts == l.collectedParts)
+        if (l.availableParts === l.collectedParts)
             drawLocationDone(l);
-        else if (l.collectedParts == 0)
+        else if (l.collectedParts === 0)
             drawLocationAvailable(l);
         else if (l.availableParts > l.collectedParts)
             drawLocationNotDone(l);
+    });
+}
 
-    }
-    );
+window.addEventListener('load', function () {
+    const fetchInterval = 1000;
+    setInterval(getLocationsFromBackend, fetchInterval);
+});
+
+function getTotals() {
+    let collected = 0;
+    let available = 0;
+
+    locations.forEach(l => {
+        collected += l.collectedParts;
+        available += l.availableParts;
+    });
+
+    return { collected, available };
+}
+
+function getTotalProgress() {
+    const { collected, available } = getTotals();
+
+    if (available === 0) return 0;
+
+    return (collected / available) * 100;
+}
+
+function updateProgressbar() {
+    document.getElementById('ftsProgress').value = getTotalProgress();
+}
+
+function updatePartsInfo() {
+    const { collected, available } = getTotals();
+    document.getElementById('pAvailableParts').textContent =
+        `Verfügbare Teile: ${available}`;
+    document.getElementById('pCollectedParts').textContent =
+        `Aufgehobene Teile: ${collected}`;
 }
 
 
-window.addEventListener('load', function () {
-    var fetchInterval = 500;
+function startButtonClickedEvent() {
+    // inform the backend of the start!!!
 
-    setInterval(getLocationsFromBackend, fetchInterval);
-});
+    console.log('START BTN clicked!');
+}
+
+document.getElementById('btnStart').addEventListener('click', () => startButtonClickedEvent());
