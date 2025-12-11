@@ -28,9 +28,10 @@ getLocationsFromBackend();
 
 mapImage.onload = () => {
     drawImageInCanvas();
-    //testNotDoneLocations();
-    //testDoneLocations();
-    testAvailableLocations();
+
+    // testNotDoneLocations();
+    // testDoneLocations();
+    // testAvailableLocations();
 }
 
 function drawImageInCanvas() {
@@ -119,4 +120,30 @@ function updateLocations(locationsBackend) {
     });
 
     // console.log(locations);
+
+    console.log('UPDATED THE LOCATION');
+
+    updateLocationsDrawing();
 }
+
+function updateLocationsDrawing() {
+
+    drawImageInCanvas();
+    locations.forEach(l => {
+        if (l.availableParts == l.collectedParts)
+            drawLocationDone(l);
+        else if (l.collectedParts == 0)
+            drawLocationAvailable(l);
+        else if (l.availableParts > l.collectedParts)
+            drawLocationNotDone(l);
+
+    }
+    );
+}
+
+
+window.addEventListener('load', function () {
+    var fetchInterval = 500;
+
+    setInterval(getLocationsFromBackend, fetchInterval);
+});
