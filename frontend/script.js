@@ -1,6 +1,6 @@
 'use strict';
 
-const backendUrl = "http://10.230.18.55:3000"; // "http://10.230.18.55:3000" // "http://192.168.4.4:3000"
+const backendUrl = "http://localhost:3000"; // "http://10.230.18.55:3000" // "http://192.168.4.4:3000"
 
 const locations = [
     { id: 0, x: 0, y: 185, xSize: 350, ySize: 165, availableParts: 0, collectedParts: 0 },
@@ -158,11 +158,10 @@ function updatePartsInfo() {
         `Aufgehobene Teile: ${collected}`;
 }
 
+// function startButtonClickedEvent() {
+//     // inform the backend of the start!!!
 
-function startButtonClickedEvent() {
-    // inform the backend of the start!!!
+//     console.log('START BTN clicked!');
+// }
 
-    console.log('START BTN clicked!');
-}
-
-document.getElementById('btnStart').addEventListener('click', () => startButtonClickedEvent());
+// document.getElementById('btnStart').addEventListener('click', () => startButtonClickedEvent());
