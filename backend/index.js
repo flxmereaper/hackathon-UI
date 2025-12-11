@@ -55,7 +55,7 @@ app.post('/orders', json(), (req, res) => {
 });
 
 app.get('/orders', (req, res) => {
-    if(!orders) {
+    if(orders.length == 0) {
         return res.status(404).json({error: "No orders found"});
     }
     const response = orders[orders.length-1].reduce((acc, curr) => {
@@ -69,7 +69,7 @@ app.get('/orders', (req, res) => {
 });
 
 app.get('/enabled', (req, res) => {
-    if (orders) {
+    if (orders.length > 0) {
         return res.json(true);
     }
     return res.json(false);
