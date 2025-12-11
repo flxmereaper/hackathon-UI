@@ -8,10 +8,14 @@ const backendUrl = "http://localhost:3000";
 const getParts = async (url) => (await fetch(url)).json();
 
 const container = document.getElementById('part-container');
+const cartButton = document.getElementById('btnShoppingCart');
+const cartCount = document.getElementById('cartCount');
+const cartButtonText = document.querySelector('.cart-button-text');
+
+let orderHasToBeComplete = true; // true = alle 4 Teile nötig, false = beliebig
+
 let availableParts = [];
 const shoppingCart = new Map();
-
-
 
 window.addEventListener('load', () => {
     init();
@@ -21,6 +25,7 @@ async function init() {
     try {
         availableParts = await getAvailablePartsFromBackend();
         populateAvailableProductsCards(availableParts);
+        updateCartCount();
     } catch (err) {
         console.error("Error loading parts:", err);
     }
@@ -41,7 +46,6 @@ function createPartCard(part) {
     const card = document.createElement('article');
     card.classList.add('part-card');
 
-    // 3D-Viewer Container
     const viewerContainer = document.createElement('div');
     viewerContainer.classList.add('part-card__viewer');
 
@@ -79,15 +83,18 @@ function createPartCard(part) {
     button.appendChild(icon);
     button.appendChild(text);
 
-    button.addEventListener('click', () => {
+    if (part.amountAvailable <= 0) {
+        disableCartButton(button);
+    } else {
+        button.addEventListener('click', () => {
+            addProductToShoppingCart(part, button);
 
-        addProductToShoppingCart(part, button); // hier check ob das product noch einmal in den cart geadded werden kann, check mit amountAvailable!
-
-        button.classList.add('part-card__button--animating');
-        setTimeout(() => {
-            button.classList.remove('part-card__button--animating');
-        }, 600);
-    });
+            button.classList.add('part-card__button--animating');
+            setTimeout(() => {
+                button.classList.remove('part-card__button--animating');
+            }, 600);
+        });
+    }
 
     content.appendChild(title);
     content.appendChild(location);
@@ -98,7 +105,6 @@ function createPartCard(part) {
     card.appendChild(button);
 
     const modelPath = part.modelPath || `models/${part.name.toLowerCase()}.stl`;
-    //const modelPath = "models/3D_model_of_a_Cube.stl";
 
     initViewer(canvas, modelPath);
 
@@ -134,17 +140,14 @@ function initViewer(canvas, stlPath) {
 
     const controls = new OrbitControls(camera, canvas);
     controls.enableDamping = true;
-    controls.autoRotate = true;      // Standard: langsam drehen
+    controls.autoRotate = true;
     controls.autoRotateSpeed = 4;
     controls.enableZoom = true;
 
     const initialTarget = controls.target.clone();
     const initialPos = camera.position.clone();
 
-    let isHovered = false;
-
     canvas.addEventListener('mouseenter', () => {
-        isHovered = true;
         controls.autoRotate = false;
 
         controls.target.copy(initialTarget);
@@ -154,7 +157,6 @@ function initViewer(canvas, stlPath) {
     });
 
     canvas.addEventListener('mouseleave', () => {
-        isHovered = false;
         controls.autoRotate = true;
     });
 
@@ -206,23 +208,68 @@ function initViewer(canvas, stlPath) {
     animate();
 }
 
-
 function addProductToShoppingCart(product, button) {
     const currentCount = shoppingCart.get(product.id) || 0;
 
     if (currentCount >= product.amountAvailable) {
-        // schon ausgeschöpft → Button sperren, nichts hinzufügen
         disableCartButton(button);
         return;
     }
 
     const newCount = currentCount + 1;
     shoppingCart.set(product.id, newCount);
-    console.log('PRODUCTS in the cart:', Array.from(shoppingCart.entries()));
+
+    console.log('Shopping cart:', Array.from(shoppingCart.entries()));
+
+    updateCartCount();
+    animateCartButton();
+    checkIfAllProductsAdded();
 
     if (newCount >= product.amountAvailable) {
         disableCartButton(button);
     }
+}
+
+function updateCartCount() {
+    let totalCount = 0;
+    shoppingCart.forEach(count => {
+        totalCount += count;
+    });
+
+    cartCount.textContent = totalCount;
+
+    if (totalCount > 0) {
+        cartCount.classList.add('visible');
+    } else {
+        cartCount.classList.remove('visible');
+    }
+}
+
+function animateCartButton() {
+    cartButton.classList.add('pulse');
+    setTimeout(() => {
+        cartButton.classList.remove('pulse');
+    }, 500);
+}
+
+function checkIfAllProductsAdded() {
+    const uniqueProductCount = shoppingCart.size;
+
+    if (uniqueProductCount === 4) {
+        showReadyToOrderMessage();
+    }
+}
+
+function showReadyToOrderMessage() {
+    const originalText = cartButtonText.textContent;
+
+    cartButtonText.textContent = 'Fertig zum Bestellen';
+    cartButton.classList.add('show-text');
+
+    setTimeout(() => {
+        cartButtonText.textContent = originalText;
+        cartButton.classList.remove('show-text');
+    }, 2000);
 }
 
 function disableCartButton(button) {
@@ -237,3 +284,46 @@ function disableCartButton(button) {
         icon.style.opacity = '0';
     }
 }
+
+cartButton.addEventListener('click', async () => {
+    if (shoppingCart.size === 0) {
+        alert('Warenkorb ist leer!');
+        return;
+    }
+
+    // Validierung: Sind alle 4 Teile im Warenkorb?
+    if (orderHasToBeComplete && shoppingCart.size < 4) {
+        alert('Bitte füge alle 4 Teile zum Warenkorb hinzu, um die Bestellung abzuschließen.');
+        return;
+    }
+
+    const orderArray = [];
+    shoppingCart.forEach((count, productId) => {
+        for (let i = 0; i < count; i++) {
+            orderArray.push({ id: productId, purchased: "false" });
+        }
+    });
+
+    try {
+        const response = await fetch(`${backendUrl}/orders`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderArray)
+        });
+
+        if (!response.ok) {
+            throw new Error('Fehler beim Absenden der Bestellung');
+        }
+
+        const result = await response.json();
+
+        const cartData = Array.from(shoppingCart.entries());
+        sessionStorage.setItem('shoppingCart', JSON.stringify(cartData));
+
+        window.location.href = 'orderOverview.html';
+
+    } catch (err) {
+        console.error('❌ Error submitting order:', err);
+        alert('Fehler beim Absenden der Bestellung. Bitte versuche es erneut.');
+    }
+});

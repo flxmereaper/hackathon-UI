@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="orderOverviewStylesheet.css" />
+    <title>Bestell Übersicht</title>
+  </head>
+  <body>
+    <div class="order-confirmation">
+      <div class="success-icon">✓</div>
+      <h1>Bestell Uebersicht</h1>
+      <p>Deine Bestellung wurde erfolgreich abgegeben</p>
+      <button id="btnOrderStatus">Bestell Status Einsehen</button>
+    </div>
+
+    <script>
+      document
+        .getElementById("btnOrderStatus")
+        .addEventListener("click", () => {
+          window.location.href = "/frontend/index.html";
+        });
+    </script>
+  </body>
+</html>

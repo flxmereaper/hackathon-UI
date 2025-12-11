@@ -17,6 +17,7 @@ html, body {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
@@ -53,6 +54,132 @@ body {
   color: #a4acbd;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+/* Sticky Warenkorb Button */
+.shopping-cart-btn {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  width: 64px;
+  height: 64px;
+  background: #BF092F;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6),
+              0 0 20px rgba(191, 9, 47, 0.4);
+  transition: width 0.3s ease, background 0.2s ease, justify-content 0.3s ease, gap 0.3s ease;
+  z-index: 1000;
+  overflow: visible;
+  white-space: nowrap;
+  gap: 0; /* initial kein Gap */
+  padding: 0;
+}
+
+.shopping-cart-btn:hover {
+  background: #a10828;
+  width: 260px;
+  padding: 0 20px;
+  justify-content: flex-start;
+  gap: 12px; /* Gap nur beim Hover */
+}
+
+.shopping-cart-btn img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+  position: relative;
+  z-index: 1;
+}
+
+/* Text im Button */
+.cart-button-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease, max-width 0.3s ease;
+}
+
+.shopping-cart-btn:hover .cart-button-text,
+.shopping-cart-btn.show-text .cart-button-text {
+  opacity: 1;
+  max-width: 220px;
+  transform: translateX(0);
+}
+
+/* "Fertig zum Bestellen" Animation */
+.shopping-cart-btn.show-text {
+  width: 270px;
+  padding: 0 20px;
+  background: #2ecc71;
+  justify-content: flex-start;
+  gap: 12px; /* Gap auch bei show-text */
+}
+
+
+.shopping-cart-btn.show-text:hover {
+  background: #27ae60;
+}
+
+/* Produktanzahl Badge */
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #ffffff;
+  color: #BF092F;
+  font-size: 0.75rem;
+  font-weight: bold;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #050509;
+  padding: 0 7px;
+  opacity: 0;
+  transform: scale(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 1001;
+  pointer-events: none;
+}
+
+.cart-count.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Animation beim Hinzufügen */
+.shopping-cart-btn.pulse {
+  animation: cart-pulse 0.5s ease-in-out;
+}
+
+@keyframes cart-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.15);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.08);
+  }
 }
 
 /* Card grid: feste 2 Spalten */
@@ -111,6 +238,7 @@ body {
   margin: 0 0 6px;
   font-size: 1.05rem;
   color: #ffffff;
+  font-family: "LED Dot Matrix", system-ui, sans-serif;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -182,7 +310,7 @@ body {
   position: absolute;
   left: 0;
   opacity: 1;
-  animation: cart-slide 0.6s ease-in-out forwards;
+  animation: cart-slide 0.6s linear forwards;
 }
 
 @keyframes cart-slide {
@@ -191,39 +319,61 @@ body {
     opacity: 1;
   }
 
-  /* nach 66% der Zeit erst bei ~60% der Strecke */
   66% {
     left: 60%;
     transform: translateX(-10%);
     opacity: 1;
   }
 
-  /* in den letzten 10% der Zeit den Rest der Strecke */
   90% {
     left: calc(100% + 10px);
     opacity: 1;
   }
 
-  /* kleiner „Auslauf“, bleibt am Ende */
   100% {
     left: calc(100% + 10px);
     opacity: 1;
   }
 }
 
-.part-card__button--animating .part-card__button-icon {
-  animation: cart-slide 0.6s linear forwards;
+/* Button disabled */
+.part-card__button--disabled {
+  background: #555;
+  border-color: rgba(255, 255, 255, 0.1);
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
-
-/* globales Timing z.B. leicht bremsend am Anfang */
-.part-card__button--animating .part-card__button-icon {
-  animation: cart-slide 0.6s linear forwards;
+.part-card__button--disabled:hover {
+  background: #555;
 }
 
+.part-card__button--disabled .part-card__button-icon {
+  opacity: 0;
+}
 
+.part-card__button--disabled:hover .part-card__button-text {
+  opacity: 1;
+}
+
+/* Responsive: auf kleinen Screens 1 Spalte */
 @media (max-width: 768px) {
   #part-container {
     grid-template-columns: 1fr;
+  }
+  
+  .shopping-cart-btn {
+    top: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+  }
+  
+  .shopping-cart-btn:hover {
+    width: 220px;
+  }
+  
+  .shopping-cart-btn.show-text {
+    width: 240px;
   }
 }

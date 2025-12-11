@@ -18,11 +18,14 @@
   <body>
     <header class="config-header">
       <h1>Produkt Warenhaus</h1>
-      <button id="btnShoppingCart">
-        <img src="img/shopping-cart.png" alt="Warenkorb" width="32" />
-      </button>
-      <!-- <p>Wähle die gewünschten Parts aus.</p> -->
     </header>
+
+    <!-- Sticky Warenkorb Button mit Text -->
+    <button id="btnShoppingCart" class="shopping-cart-btn">
+      <img src="img/shopping-cart.png" alt="Warenkorb" />
+      <span class="cart-button-text">Bestellung abgeben</span>
+      <span id="cartCount" class="cart-count">0</span>
+    </button>
 
     <main>
       <section id="part-container"></section>
