@@ -1,21 +1,21 @@
 'use strict';
 
-import express, {json, response} from 'express';
+import express, { json, response } from 'express';
 import cors from "cors"
 
-const locations = [ {id: 0, availableItems: 3, collectedItems: 1},
-                    {id: 1, availableItems: 2, collectedItems: 2},
-                    {id: 2, availableItems: 1, collectedItems: 1},
-                    {id: 3, availableItems: 1, collectedItems: 0},
-                    {id: 4, availableItems: 2, collectedItems: 0} ]
+const locations = [{ id: 0, availableItems: 3, collectedItems: 1 },
+{ id: 1, availableItems: 2, collectedItems: 2 },
+{ id: 2, availableItems: 1, collectedItems: 1 },
+{ id: 3, availableItems: 1, collectedItems: 0 },
+{ id: 4, availableItems: 2, collectedItems: 0 }]
 const app = express();
 const PORT = process.env.PORT || 3000;
 let orders = [];
 const products = [
-    {id: 0, name: 'Teil1', locationId: 0},
-    {id: 1, name: 'Teil2', locationId: 1},
-    {id: 2, name: 'Teil3', locationId: 2},
-    {id: 3, name: 'Teil4', locationId: 3}
+    { id: 0, name: 'Oberkoerper', locationId: 0, amountAvailable: 1 },
+    { id: 1, name: 'Kopf', locationId: 1, amountAvailable: 1 },
+    { id: 2, name: 'Linker Arm', locationId: 2, amountAvailable: 1 },
+    { id: 3, name: 'Rechter Arm', locationId: 3, amountAvailable: 1 }
 ];
 
 app.use(cors({
@@ -25,20 +25,20 @@ app.use(cors({
 app.put('/locations/:id', json(), (req, res) => {
     const { id } = req.params;
     if (id != 0 && !id) {
-        return res.status(400).json({error: "no id specified"});
+        return res.status(400).json({ error: "no id specified" });
     }
 
     if (!req.body) {
-        return res.status(400).json({error: "empty body"});
+        return res.status(400).json({ error: "empty body" });
     }
 
     const index = locations.findIndex(l => l.id === +id);
 
-    if(index == 0 || index) {
-        locations[index] = {id: +id, ...req.body};
+    if (index == 0 || index) {
+        locations[index] = { id: +id, ...req.body };
         return res.json(locations[index]);
     }
-    res.status(404).json({error: `location with id ${id} not found!`})
+    res.status(404).json({ error: `location with id ${id} not found!` })
 });
 
 app.get('/locations{/:id}', (req, res) => {
@@ -51,14 +51,14 @@ app.get('/locations{/:id}', (req, res) => {
 
 app.post('/orders', json(), (req, res) => {
     orders.push(req.body);
-    res.json(orders[orders.length-1]);
+    res.json(orders[orders.length - 1]);
 });
 
 app.get('/orders', (req, res) => {
-    const response = orders[orders.length-1].reduce((acc, curr) => {
-        console.log({...curr, locationId: products.find(p => p.id == curr.id).locationId})
+    const response = orders[orders.length - 1].reduce((acc, curr) => {
+        console.log({ ...curr, locationId: products.find(p => p.id == curr.id).locationId })
         return acc.concat(JSON.stringify(
-            {...curr, locationId: products.find(p => p.id == curr.id).locationId}
+            { ...curr, locationId: products.find(p => p.id == curr.id).locationId }
         ) + ', ');
     }, '[').slice(0, -2).concat(']');
     console.log(response);
@@ -66,7 +66,7 @@ app.get('/orders', (req, res) => {
 });
 
 app.get('/enabled', (req, res) => {
-    if(orders) {
+    if (orders) {
         return res.json(true);
     }
     return res.json(false);
