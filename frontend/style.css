@@ -137,15 +137,20 @@ body {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .parts h3 {
-  margin: 0 0 8px;
+  margin: 0 0 12px;
   font-size: 0.95rem;
   color: #ffffff;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .parts p,
@@ -154,6 +159,11 @@ body {
   font-size: 0.88rem;
   color: #8b93a3;
   line-height: 1.6;
+}
+
+#collectedParts {
+  flex: 1;
+  overflow-y: auto;
 }
 
 /* Location Information */
@@ -179,6 +189,7 @@ body {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: auto;
+  flex-shrink: 0;
 }
 
 .legend-item {
@@ -200,6 +211,7 @@ body {
   border-radius: 4px;
   display: inline-block;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
 }
 
 .legend-done {
@@ -222,14 +234,13 @@ body {
   flex: 1;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: stretch;
   position: relative;
 }
 
 #myCanvas {
   width: 100%;
-  max-width: 800px;
-  height: 600px;
+  height: 100%;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
@@ -237,6 +248,7 @@ body {
     0 10px 24px rgba(0, 0, 0, 0.85),
     0 0 30px rgba(59, 151, 151, 0.25);
   background: #1a1a24;
+  object-fit: contain;
 }
 
 /* Location Popup */
@@ -260,6 +272,66 @@ body {
   color: #f7f9fc;
 }
 
+.location-popup strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Bestellte Teile Liste */
+#collectedParts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#collectedParts::-webkit-scrollbar {
+  width: 6px;
+}
+
+#collectedParts::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+}
+
+#collectedParts::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+#collectedParts::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+#collectedParts li {
+  margin-bottom: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+#collectedParts li:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+#collectedParts li:last-child {
+  margin-bottom: 0;
+}
+
+#collectedParts strong {
+  color: #ffffff;
+  display: block;
+  margin-bottom: 4px;
+}
+
+#collectedParts span {
+  color: #a4acbd;
+  font-size: 0.8rem;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .page {
@@ -274,10 +346,10 @@ body {
 
   .mapWrapper {
     justify-content: center;
+    min-height: 500px;
   }
 
   #myCanvas {
     max-width: 100%;
-    height: 400px;
   }
 }

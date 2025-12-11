@@ -1,6 +1,6 @@
 'use strict';
 
-const backendUrl = "http://localhost:3000"; // "http://10.230.18.55:3000" // "http://192.168.4.4:3000"
+const backendUrl = "http://localhost:3000";
 
 const locations = [
     { id: 0, x: 0, y: 185, xSize: 350, ySize: 165, availableParts: 0, collectedParts: 0 },
@@ -12,6 +12,7 @@ const locations = [
 
 const getStatus = async (url) => ((await fetch(url)).json());
 const getLocations = async (url) => ((await fetch(url)).json());
+const getProducts = async (url) => ((await fetch(url)).json());
 
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
@@ -20,10 +21,13 @@ mapImage.src = "../frontend/img/map.png";
 
 let currentStatus = 0;
 let currentLocationHovering = 0;
+let highlightedLocationId = null;
+let allProducts = [];
 
 const popup = document.getElementById('locationPopup');
 
 getLocationsFromBackend();
+displayOrderedParts();
 
 mapImage.onload = () => {
     drawImageInCanvas();
@@ -32,7 +36,6 @@ mapImage.onload = () => {
 function drawImageInCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(mapImage, 0, 0, canvas.width, canvas.height);
-    console.log('drawImageInCanvas');
 }
 
 function drawLocationDone(location) {
@@ -50,10 +53,47 @@ function drawLocationAvailable(location) {
     ctx.fillRect(location.x, location.y, location.xSize, location.ySize);
 }
 
+function drawLocationEmpty(location) {
+    // Dark red/gray fill to indicate no parts available
+    ctx.fillStyle = "rgba(80, 80, 80, 0.6)";
+    ctx.fillRect(location.x, location.y, location.xSize, location.ySize);
+
+    // Red diagonal stripes pattern
+    ctx.strokeStyle = "rgba(191, 9, 47, 0.7)";
+    ctx.lineWidth = 3;
+
+    const spacing = 20;
+    for (let i = -location.ySize; i < location.xSize; i += spacing) {
+        ctx.beginPath();
+        ctx.moveTo(location.x + i, location.y);
+        ctx.lineTo(location.x + i + location.ySize, location.y + location.ySize);
+        ctx.stroke();
+    }
+
+    // Red border
+    ctx.strokeStyle = "rgba(191, 9, 47, 0.8)";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(location.x, location.y, location.xSize, location.ySize);
+}
+
+function drawLocationHighlight(location) {
+    ctx.strokeStyle = "rgba(59, 151, 151, 1)";
+    ctx.lineWidth = 5;
+    ctx.strokeRect(location.x + 2.5, location.y + 2.5, location.xSize - 5, location.ySize - 5);
+
+    ctx.strokeStyle = "rgba(59, 151, 151, 0.5)";
+    ctx.lineWidth = 8;
+    ctx.strokeRect(location.x, location.y, location.xSize, location.ySize);
+}
+
 canvas.addEventListener("click", (e) => {
     const rect = canvas.getBoundingClientRect();
-    const xPos = e.clientX - rect.left;
-    const yPos = e.clientY - rect.top;
+
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    const xPos = (e.clientX - rect.left) * scaleX;
+    const yPos = (e.clientY - rect.top) * scaleY;
 
     const hit = locations.find(
         location =>
@@ -69,13 +109,28 @@ canvas.addEventListener("click", (e) => {
     currentLocationHovering = hit.id;
 
     const wrapperRect = canvas.parentElement.getBoundingClientRect();
-    popup.style.left = `${e.clientX - wrapperRect.left + 360}px`;
-    popup.style.top = `${e.clientY - wrapperRect.top - 40}px`;
+    popup.style.left = `${e.clientX - wrapperRect.left}px`;
+    popup.style.top = `${e.clientY - wrapperRect.top - 70}px`;
+
+    const productsAtLocation = allProducts.filter(p => p.locationId === hit.id);
+
+    let productsHTML = '';
+    if (productsAtLocation.length > 0) {
+        productsHTML = '<br><strong>Teile:</strong><br>' +
+            productsAtLocation.map(p => `• ${p.name}`).join('<br>');
+    }
+
+    let statusText = '';
+    if (hit.availableParts === 0) {
+        statusText = '<br><span style="color: #BF092F; font-weight: bold;">⚠ Keine Teile verfügbar</span>';
+    }
 
     popup.innerHTML = `
     <strong>Location ${hit.id}</strong><br>
     Verfügbare Teile: ${hit.availableParts}<br>
     Aufgehobene Teile: ${hit.collectedParts}
+    ${productsHTML}
+    ${statusText}
   `;
 
     popup.style.display = "block";
@@ -102,8 +157,6 @@ function updateLocations(locationsBackend) {
         }
     });
 
-    //console.log('UPDATED THE LOCATION');
-
     updateLocationsDrawing();
     updatePartsInfo();
 }
@@ -112,13 +165,30 @@ function updateLocationsDrawing() {
     drawImageInCanvas();
 
     locations.forEach(l => {
-        if (l.availableParts === l.collectedParts)
+        // Check if location has no available parts (empty)
+        if (l.availableParts === 0) {
+            drawLocationEmpty(l);
+        }
+        // All parts collected
+        else if (l.availableParts === l.collectedParts) {
             drawLocationDone(l);
-        else if (l.collectedParts === 0)
+        }
+        // No parts collected yet
+        else if (l.collectedParts === 0) {
             drawLocationAvailable(l);
-        else if (l.availableParts > l.collectedParts)
+        }
+        // Partially collected
+        else if (l.availableParts > l.collectedParts) {
             drawLocationNotDone(l);
+        }
     });
+
+    if (highlightedLocationId !== null) {
+        const highlightedLocation = locations.find(l => l.id === highlightedLocationId);
+        if (highlightedLocation) {
+            drawLocationHighlight(highlightedLocation);
+        }
+    }
 }
 
 window.addEventListener('load', function () {
@@ -138,16 +208,56 @@ function getTotals() {
     return { collected, available };
 }
 
+function getOrderedPartsTotals() {
+    let orderedCollected = 0;
+    let orderedTotal = 0;
+
+    const cartData = sessionStorage.getItem('shoppingCart');
+
+    if (!cartData) {
+        return { orderedCollected: 0, orderedTotal: 0 };
+    }
+
+    try {
+        const cart = JSON.parse(cartData);
+
+        cart.forEach(([productId, count]) => {
+            orderedTotal += count;
+
+            const product = allProducts.find(p => p.id === productId);
+            if (product) {
+                const location = locations.find(l => l.id === product.locationId);
+                if (location) {
+                    const collectedAtLocation = Math.min(count, location.collectedParts);
+                    orderedCollected += collectedAtLocation;
+                }
+            }
+        });
+
+        return { orderedCollected, orderedTotal };
+    } catch (err) {
+        console.error('Error calculating ordered parts totals:', err);
+        return { orderedCollected: 0, orderedTotal: 0 };
+    }
+}
+
 function getTotalProgress() {
-    const { collected, available } = getTotals();
+    const { orderedCollected, orderedTotal } = getOrderedPartsTotals();
 
-    if (available === 0) return 0;
+    if (orderedTotal === 0) return 0;
 
-    return (collected / available) * 100;
+    return (orderedCollected / orderedTotal) * 100;
 }
 
 function updateProgressbar() {
-    document.getElementById('ftsProgress').value = getTotalProgress();
+    const progress = getTotalProgress();
+    document.getElementById('ftsProgress').value = progress;
+
+    const { orderedCollected, orderedTotal } = getOrderedPartsTotals();
+    const label = document.querySelector('.status label');
+    if (label && orderedTotal > 0) {
+        label.textContent = `FTS Status: ${orderedCollected}/${orderedTotal} Teile aufgehoben`;
+    }
 }
 
 function updatePartsInfo() {
@@ -158,10 +268,77 @@ function updatePartsInfo() {
         `Aufgehobene Teile: ${collected}`;
 }
 
-// function startButtonClickedEvent() {
-//     // inform the backend of the start!!!
+async function displayOrderedParts() {
+    try {
+        const cartData = sessionStorage.getItem('shoppingCart');
 
-//     console.log('START BTN clicked!');
-// }
+        if (!cartData) {
+            document.getElementById('collectedParts').innerHTML =
+                '<span style="color: #8b93a3; font-size: 0.85rem;">Keine Bestellung vorhanden</span>';
+            return;
+        }
 
-// document.getElementById('btnStart').addEventListener('click', () => startButtonClickedEvent());
+        const cart = JSON.parse(cartData);
+        const products = await getProducts(`${backendUrl}/products`);
+
+        allProducts = products;
+
+        const collectedPartsElement = document.getElementById('collectedParts');
+        collectedPartsElement.innerHTML = '';
+
+        const listElement = document.createElement('ul');
+        listElement.style.listStyle = 'none';
+        listElement.style.padding = '0';
+        listElement.style.margin = '0';
+
+        cart.forEach(([productId, count]) => {
+            const product = products.find(p => p.id === productId);
+
+            if (product) {
+                const listItem = document.createElement('li');
+                listItem.style.marginBottom = '8px';
+                listItem.style.padding = '8px 10px';
+                listItem.style.background = 'rgba(255, 255, 255, 0.05)';
+                listItem.style.borderRadius = '6px';
+                listItem.style.fontSize = '0.85rem';
+                listItem.style.border = '1px solid rgba(255, 255, 255, 0.08)';
+                listItem.style.transition = 'background 0.2s ease, border-color 0.2s ease';
+
+                listItem.innerHTML = `
+                    <strong style="color: #ffffff; display: block; margin-bottom: 4px;">${product.name}</strong>
+                    <span style="color: #a4acbd; font-size: 0.8rem;">Anzahl: ${count} | Location: ${product.locationId}</span>
+                `;
+
+                listItem.addEventListener('mouseenter', () => {
+                    listItem.style.background = 'rgba(59, 151, 151, 0.15)';
+                    listItem.style.borderColor = 'rgba(59, 151, 151, 0.5)';
+
+                    highlightedLocationId = product.locationId;
+                    updateLocationsDrawing();
+                });
+
+                listItem.addEventListener('mouseleave', () => {
+                    listItem.style.background = 'rgba(255, 255, 255, 0.05)';
+                    listItem.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+
+                    highlightedLocationId = null;
+                    updateLocationsDrawing();
+                });
+
+                listElement.appendChild(listItem);
+            }
+        });
+
+        if (listElement.children.length === 0) {
+            collectedPartsElement.innerHTML =
+                '<span style="color: #8b93a3; font-size: 0.85rem;">Keine Teile bestellt</span>';
+        } else {
+            collectedPartsElement.appendChild(listElement);
+        }
+
+    } catch (err) {
+        console.error('Error displaying ordered parts:', err);
+        document.getElementById('collectedParts').innerHTML =
+            '<span style="color: #ff6b6b; font-size: 0.85rem;">Fehler beim Laden</span>';
+    }
+}
