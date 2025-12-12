@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-const backendUrl = "http://10.230.18.55:3000"; // http://localhost:3000 http://10.230.18.55:3000 http://192.168.4.2:3000
+const backendUrl = "http://192.168.4.4:3000"; // http://localhost:3000 http://10.230.18.55:3000 http://192.168.4.2:3000
 const getParts = async (url) => (await fetch(url)).json();
 
 const container = document.getElementById('part-container');

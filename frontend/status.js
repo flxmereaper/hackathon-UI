@@ -1,13 +1,13 @@
 'use strict';
 
-const backendUrl = "http://10.230.18.55:3000"; // "http://192.168.4.7:3000" http://192.168.4.2:3000
+const backendUrl = "http://192.168.4.4:3000"; // "http://192.168.4.7:3000" http://192.168.4.2:3000
 
 const locations = [
     { id: 0, x: 0, y: 185, xSize: 350, ySize: 165, availableParts: 0, collectedParts: 0 },
-    { id: 1, x: 0, y: 515, xSize: 305, ySize: 90, availableParts: 0, collectedParts: 0 },
-    { id: 2, x: 435, y: 0, xSize: 250, ySize: 110, availableParts: 0, collectedParts: 0 },
+    { id: 4, x: 0, y: 515, xSize: 305, ySize: 90, availableParts: 0, collectedParts: 0 },
+    { id: 1, x: 435, y: 0, xSize: 250, ySize: 110, availableParts: 0, collectedParts: 0 },
     { id: 3, x: 490, y: 365, xSize: 77, ySize: 95, availableParts: 0, collectedParts: 0 },
-    { id: 4, x: 715, y: 175, xSize: 85, ySize: 215, availableParts: 0, collectedParts: 0 }
+    { id: 2, x: 715, y: 175, xSize: 85, ySize: 215, availableParts: 0, collectedParts: 0 }
 ];
 
 const getStatus = async (url) => ((await fetch(url)).json());
@@ -172,7 +172,7 @@ function updateLocationsDrawing() {
         if (l.availableParts === 0) {
             drawLocationEmpty(l);
         }
-        else if (l.availableParts === l.collectedParts) {
+        else if (l.availableParts > 0 && l.availableParts === l.collectedParts) {
             drawLocationDone(l);
         }
         else if (l.collectedParts > 0 && l.collectedParts < l.availableParts) {
@@ -190,6 +190,7 @@ function updateLocationsDrawing() {
         }
     }
 }
+
 
 window.addEventListener('load', function () {
     const fetchInterval = 1000;
