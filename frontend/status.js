@@ -1,6 +1,6 @@
 'use strict';
 
-const backendUrl = "http://localhost:3000";
+const backendUrl = "http://10.230.18.55:3000"; // "http://192.168.4.7:3000" http://192.168.4.2:3000
 
 const locations = [
     { id: 0, x: 0, y: 185, xSize: 350, ySize: 165, availableParts: 0, collectedParts: 0 },
