@@ -19,7 +19,7 @@ const products = [
     { id: 0, name: 'Oberkoerper', locationId: 0, amountAvailable: 1 },
     { id: 1, name: 'Kopf', locationId: 2, amountAvailable: 1 },
     { id: 2, name: 'Linker Arm', locationId: 3, amountAvailable: 1 },
-    { id: 3, name: 'Rechter Arm', locationId: 4, amountAvailable: 1 }
+    { id: 3, name: 'Rechter Arm und Pokal', locationId: 4, amountAvailable: 1 }
 ];
 
 app.use(cors({
@@ -81,8 +81,8 @@ function reduceAvailableFieldInProducts() {
 
 
 app.get('/orders', (req, res) => {
-    if(orders.length == 0) {
-        return res.status(404).json({error: "No orders found"});
+    if (orders.length == 0) {
+        return res.status(404).json({ error: "No orders found" });
     }
     const response = orders[orders.length - 1].reduce((acc, curr) => {
         console.log({ ...curr, locationId: products.find(p => p.id == curr.id).locationId })

@@ -1,11 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aufbauanleitung</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #050509;
+        color: #ffffff;
+        font-family: system-ui, -apple-system, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        font-weight: 400;
+        margin-bottom: 30px;
+        color: #e0e0e0;
+        letter-spacing: 0.02em;
+      }
+
+      .video-container {
+        width: 100%;
+        max-width: 1200px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      video {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .back-button {
+        margin-top: 30px;
+        padding: 12px 28px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .back-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+    </style>
   </head>
   <body>
-    
+    <h1>Aufbauanleitung</h1>
+
+    <div class="video-container">
+      <video controls autoplay loop muted preload="auto">
+        <source src="img/manaual.mp4" type="video/mp4" />
+        <source src="img/manaual.mp4" type="video/webm" />
+        Ihr Browser unterstützt das Video-Tag nicht.
+      </video>
+    </div>
+
+    <a href="./index.html" class="back-button">Zurück zur Übersicht</a>
   </body>
 </html>

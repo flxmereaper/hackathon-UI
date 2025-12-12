@@ -126,7 +126,7 @@ canvas.addEventListener("click", (e) => {
 
     let statusText = '';
     if (hit.availableParts === 0) {
-        statusText = '<br><span style="color: #BF092F; font-weight: bold;">⚠ Keine Teile verfügbar</span>';
+        statusText = '<br><span style="color: #BF092F; font-weight: bold;">Keine Teile verfügbar</span>';
     }
 
     popup.innerHTML = `
@@ -259,7 +259,6 @@ function updateProgressbar() {
         label.textContent = `FTS Status: ${orderedCollected}/${orderedTotal} Teile aufgehoben`;
     }
 
-    // Prüfen ob alle Teile eingesammelt wurden
     checkIfAllPartsCollected(orderedCollected, orderedTotal);
 }
 
@@ -281,8 +280,8 @@ function showAssemblyButton() {
 
         assemblyButton.innerHTML = `
             <div class="assembly-button-content">
-                <h2>✓ Alle Teile eingesammelt!</h2>
-                <button id="btnAssembly">Zur Aufbauanleitung</button>
+                <h2>Alle Teile eingesammelt</h2>
+                <button id="btnAssembly">Aufbauanleitung öffnen</button>
             </div>
         `;
 
@@ -295,6 +294,7 @@ function showAssemblyButton() {
 
     assemblyButton.style.display = 'flex';
 }
+
 
 function hideAssemblyButton() {
     const assemblyButton = document.getElementById('assemblyButton');
