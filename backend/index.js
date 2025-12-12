@@ -4,11 +4,11 @@ import express, { json, response } from 'express';
 import cors from "cors";
 
 const locations = [
-    { id: 0, availableItems: 2, collectedItems: 0 },
-    { id: 1, availableItems: 0, collectedItems: 0 },
-    { id: 2, availableItems: 1, collectedItems: 0 },
+    { id: 0, availableItems: 1, collectedItems: 0 },
+    { id: 4, availableItems: 0, collectedItems: 0 },
+    { id: 1, availableItems: 1, collectedItems: 0 },
     { id: 3, availableItems: 1, collectedItems: 0 },
-    { id: 4, availableItems: 1, collectedItems: 0 }
+    { id: 2, availableItems: 1, collectedItems: 0 }
 ];
 
 const app = express();
@@ -17,9 +17,9 @@ let orders = [];
 
 const products = [
     { id: 0, name: 'Oberkoerper', locationId: 0, amountAvailable: 1 },
-    { id: 1, name: 'Kopf', locationId: 2, amountAvailable: 1 },
-    { id: 2, name: 'Linker Arm', locationId: 3, amountAvailable: 1 },
-    { id: 3, name: 'Rechter Arm und Pokal', locationId: 4, amountAvailable: 1 }
+    { id: 1, name: 'Kopf', locationId: 1, amountAvailable: 1 },
+    { id: 2, name: 'Linker Arm', locationId: 2, amountAvailable: 1 },
+    { id: 3, name: 'Rechter Arm und Pokal', locationId: 3, amountAvailable: 1 }
 ];
 
 app.use(cors({
