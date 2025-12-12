@@ -154,7 +154,7 @@ Content-Type: application/json
 }
 
 ### Schritt 3: FTS fährt zu Location 2 (Kopf abgeholt)
-PUT {{URL}}/locations/2
+PUT {{URL}}/locations/1
 Content-Type: application/json
 
 {
@@ -163,7 +163,7 @@ Content-Type: application/json
 }
 
 ### Schritt 4: FTS fährt zu Location 3 (Linker Arm teilweise abgeholt)
-PUT {{URL}}/locations/3
+PUT {{URL}}/locations/2
 Content-Type: application/json
 
 {
@@ -172,7 +172,7 @@ Content-Type: application/json
 }
 
 ### Schritt 5: FTS fährt zu Location 3 (Linker Arm komplett abgeholt)
-PUT {{URL}}/locations/3
+PUT {{URL}}/locations/2
 Content-Type: application/json
 
 {
@@ -181,7 +181,7 @@ Content-Type: application/json
 }
 
 ### Schritt 6: FTS fährt zu Location 4 (Rechter Arm abgeholt) - FERTIG!
-PUT {{URL}}/locations/4
+PUT {{URL}}/locations/3
 Content-Type: application/json
 
 {
